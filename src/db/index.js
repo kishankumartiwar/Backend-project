@@ -1,3 +1,5 @@
+// have codes to connect to database 
+
 import mongoose from  "mongoose";
 import { DB_NAME } from "../constants.js";
 
