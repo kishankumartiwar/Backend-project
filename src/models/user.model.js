@@ -39,7 +39,7 @@ const UserSchema = new Schema(
       type: String,
     },
     // Array of references to the Video model, representing the user's watch history
-    watchHistory: [
+    watchHistory: [ 
       {
         type: Schema.Types.ObjectId,
         ref: "Video"

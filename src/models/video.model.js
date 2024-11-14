@@ -1,43 +1,58 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
-const videoSchema = new Schema (
+
+// Define the schema for the Video model
+const videoSchema = new Schema(
   {
-    videoFile:{
-      type:String,// using cloudinary service to get avatar
-      required:true,
+    // URL to the video file, stored in a cloud service like Cloudinary
+    videoFile: {
+      type: String,
+      required: true,
     },
-    thumbnail:{
-      type:String,// using cloudinary service to get avatar
-      required:true,
+    // URL to the video's thumbnail image, also stored in Cloudinary
+    thumbnail: {
+      type: String,
+      required: true,
     },
-    title:{
-      type:String,
-      required:true,
+    // Title of the video, a brief text description
+    title: {
+      type: String,
+      required: true,
     },
-    description:{
-      type:String,
-      required:true,
+    // Detailed description of the video content
+    description: {
+      type: String,
+      required: true,
     },
-    duration:{
-      type:Number, //cloudnary info (duration of video)
-      required:true,
+    // Duration of the video in seconds, typically fetched from Cloudinary metadata
+    duration: {
+      type: Number,
+      required: true,
     },
-    views:{
-      type:Number,
-      default:0,
+    // Number of times the video has been viewed, initialized to 0
+    views: {
+      type: Number,
+      default: 0,
     },
-    isPublished:{
-      type:Boolean,
-      default:true,
+    // Boolean flag to determine if the video is published and publicly accessible
+    isPublished: {
+      type: Boolean,
+      default: true,
     },
-    owner:{
-      type:Schema.Types.ObjectId,
-      ref:"User"
+    // Reference to the User model, indicating the owner of the video
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
     }
   },
   {
-    timestamps:true
+    // Automatically manage createdAt and updatedAt fields
+    timestamps: true
   }
-)
-videoSchema.plugin(mongooseAggregatePaginate)
-export const Video = mongoose.model("video",videoSchema);
+);
+
+// Apply pagination plugin to allow easy pagination on aggregated queries
+videoSchema.plugin(mongooseAggregatePaginate);
+
+// Export the Video model to use in other parts of the application
+export const Video = mongoose.model("video", videoSchema);
