@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./db/index.js";
+import {app} from './app.js'
 
 dotenv.config(); // Load environment variables from .env file
 
-const app = express();
 
 // Establish database connection and start the server
 connectDB()
@@ -19,6 +19,59 @@ connectDB()
     console.error("MongoDB connection failed:", err);
   });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 /* 
 First approach to connect to the database:
 
