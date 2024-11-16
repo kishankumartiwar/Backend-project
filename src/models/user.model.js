@@ -30,10 +30,10 @@ const UserSchema = new Schema(
       index: true
     },
     // URL of the user's avatar image, typically from a cloud service
-    avatar: {
+    /* avatar: {
       type: String,
       required: true,
-    },
+    }, */
     // URL of the user's profile cover image, optional
     coverImage: {
       type: String,
