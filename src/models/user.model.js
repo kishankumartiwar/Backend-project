@@ -30,10 +30,10 @@ const UserSchema = new Schema(
       index: true
     },
     // URL of the user's avatar image, typically from a cloud service
-    /* avatar: {
+    avatar: {
       type: String,
       required: true,
-    }, */
+    }, 
     // URL of the user's profile cover image, optional
     coverImage: {
       type: String,
@@ -87,7 +87,7 @@ UserSchema.methods.generateAccessToken = function() {
     },
     process.env.ACCESS_TOKEN_SECRET, // Secret key from environment variable
     {
-      expiresIn: ACCESS_TOKEN_EXPIRY // Expiration time from configuration
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY // Expiration time from configuration
     }
   );
 };
@@ -100,7 +100,7 @@ UserSchema.methods.generateRefreshToken = function() {
     },
     process.env.REFRESH_TOKEN_SECRET, // Secret key for refresh token
     {
-      expiresIn: REFRESH_TOKEN_EXPIRY // Expiration time for refresh token
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY // Expiration time for refresh token
     }
   );
 };
