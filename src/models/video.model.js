@@ -55,4 +55,4 @@ const videoSchema = new Schema(
 videoSchema.plugin(mongooseAggregatePaginate);
 
 // Export the Video model to use in other parts of the application
-export const Video = mongoose.model("video", videoSchema);
+export const Video = mongoose.model("Video", videoSchema);
