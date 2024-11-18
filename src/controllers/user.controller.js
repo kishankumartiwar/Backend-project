@@ -205,12 +205,180 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new ApiError(401, error?.message || "Invalid refresh token");
   }
-});
+})
 
+const changeCurrentPassword = asyncHandler(async(req,res)=>{
+  const{oldPassword , newPassword} = req.body  
+ const User = await user.findById(req.User?._id)
+ const isPasswordCorrect = await User.isPasswordCorrect(oldPassword)
+ if(!isPasswordCorrect){
+  throw new ApiError(400 , "Inavalid password entered")
+ }
+ User.password = newPassword
+ await User.save({validateBeforeSave:false})
+ return res
+ .status()
+ .json(new ApiResponse(200,{},"password saved succesfully"))
+
+
+
+})
+
+const getCurrentUser = asyncHandler(async(req,res) =>{
+  return res
+  .status(200)
+  .json(new ApiResponse (200,req.User,"current user fetched succesfully"))
+})
+
+const updateAccountDetails = asyncHandler(async(req,res)=>{
+  const {fullname,email} = req.body 
+
+  if(!fullname || !email){
+    throw new ApiError(400,"All fields are required")
+  }
+
+  const User = await user.findByIdAndUpdate(
+    req.User?._id,
+    {
+      $set:{
+        fullname,
+        email : email,
+
+      }
+    },
+    {new:true}).select("-password")
+    return res
+    .status(200)
+    .json(new ApiResponse(200,{},"account details update succesfully"))
+})
+
+const updateUserAvatar = asyncHandler(async(req,res)=> {
+  const avatarLocalPath = req.file?.path
+  if(!avatarLocalPath){
+    throw new ApiError(400, "Avatar file is missing")
+  }
+  const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+  if(!avatar.url){
+    throw new ApiError(400, "Error while uploading on avatar")  
+  }
+  const User = await user.findByIdAndUpdate(
+    req.User?._id,
+    {
+      $set :{
+        avatar : avatar.url
+      }
+    },
+    {new:true}
+  ).select("-password")
+
+  return res
+  .status(200)
+  .json(new ApiResponse(200,User, "avatar image updated succesfully"))
+})
+
+const updateUserCoverImage = asyncHandler(async(req,res)=> {
+  const coverImgageLocalPath = req.file?.path
+  if(!coverImgageLocalPath){
+    throw new ApiError(400, "coverimage file is missing")
+  }
+  const coverImage = await uploadOnCloudinary(coverImgageLocalPath)
+
+  if(!coverImage.url){
+    throw new ApiError(400, "Error while uploading on coverimage")  
+  }
+  const User = await user.findByIdAndUpdate(
+    req.User?._id,
+    {
+      $set :{
+        coverImage : coverImage.url
+      }
+    },
+    {new:true}
+  ).select("-password")
+
+
+  return res
+  .status(200)
+  .json(new ApiResponse(200,User, "cover image updated succesfully"))
+})
+
+const getUserChannelProfile = asyncHandler(async(req,res)=>{
+  const{username} = req.params
+  if(!username?.trim()){
+    throw new ApiError(400,"username missing")
+  }
+  const channel = await user.aggregate([
+    {
+      $match:{
+        username:username?.toLowerCase()
+      }
+    },
+    {
+      $lookup:{
+        from:"subscriptions",
+        localField:"_id",
+        foreignField:"channel",
+        as:"Subscribers"
+      }
+    },
+    {
+      $lookup:{
+        from:"subscriptions",
+        localField:"_id",
+        foreignField:"subscriber",
+        as:"subscribedTo"
+      }
+    },
+    {
+      $addFields:{
+        subscribersCount:{
+          $size:"$subscribers"
+        },
+        channelsSubscribedToCount:{
+          $size:"$subscribedTo"
+        },
+        isSubscribed:{
+          $cond:{
+            if:{$in:[req.User?._id,"$subscribers.subscriber"]},
+            then:true,
+            else:false
+          }
+        }
+      }
+    },
+    {
+      $project:{
+        fullname:1,
+        username:1,
+        subscribersCount:1,
+        channelsSubscribedToCount:1,
+        isSubscribed:1,
+        avatar:1,
+        coverImage:1,
+        email:1
+      }
+    }
+  ])
+
+  if(!channel?.length()){
+    throw new ApiError(404,"channel doesnt exist")
+  }
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(200,channel[0],"user channel fetched succesfully")
+  )
+})
 // Exporting the controller functions
-export {
+export {   
   registerUser,
   loginUser,
   logoutUser,
   refreshAccessToken,
+  changeCurrentPassword,
+  getCurrentUser,
+  updateAccountDetails,
+  updateUserAvatar,
+  updateUserCoverImage
 };
