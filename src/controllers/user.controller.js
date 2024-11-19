@@ -4,6 +4,8 @@ import { user as UserModel } from "../models/user.model.js"; // Importing the us
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Cloudinary utility to upload files
 import { ApiResponse } from "../utils/ApiResponse.js"; // Utility to structure API responses
 import jwt from "jsonwebtoken"
+import mongoose from 'mongoose';
+
 
 // Function to generate access and refresh tokens for a user
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -308,60 +310,64 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
   if(!username?.trim()){
     throw new ApiError(400,"username missing")
   }
-  const channel = await user.aggregate([
-    {
-      $match:{
-        username:username?.toLowerCase()
-      }
-    },
-    {
-      $lookup:{
-        from:"subscriptions",
-        localField:"_id",
-        foreignField:"channel",
-        as:"Subscribers"
-      }
-    },
-    {
-      $lookup:{
-        from:"subscriptions",
-        localField:"_id",
-        foreignField:"subscriber",
-        as:"subscribedTo"
-      }
-    },
-    {
-      $addFields:{
-        subscribersCount:{
-          $size:"$subscribers"
-        },
-        channelsSubscribedToCount:{
-          $size:"$subscribedTo"
-        },
-        isSubscribed:{
-          $cond:{
-            if:{$in:[req.User?._id,"$subscribers.subscriber"]},
-            then:true,
-            else:false
-          }
-        }
-      }
-    },
-    {
-      $project:{
-        fullname:1,
-        username:1,
-        subscribersCount:1,
-        channelsSubscribedToCount:1,
-        isSubscribed:1,
-        avatar:1,
-        coverImage:1,
-        email:1
-      }
-    }
-  ])
+  console.log("req.user._id:", req.User._id); // Check the value
 
-  if(!channel?.length()){
+  const channel = await UserModel.aggregate([
+    {
+      $match: {
+        username: username?.toLowerCase(),
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "Subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+    {
+      $addFields: {
+        subscribersCount: {
+          $size: { $ifNull: ["$Subscribers", []] },
+        },
+        channelsSubscribedToCount: {
+          $size: { $ifNull: ["$subscribedTo", []] },
+        },
+        isSubscribed: {
+          $cond: {
+            if: { $in: [req.User._id, "$Subscribers.subscriber"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullname: 1,
+        username: 1,
+        subscribersCount: 1,
+        channelsSubscribedToCount: 1,
+        isSubscribed: 1,
+        avatar: 1,
+        coverImage: 1,
+        email: 1,
+      },
+    },
+  ]);
+  
+
+
+  if(!channel?.length){
     throw new ApiError(404,"channel doesnt exist")
   }
   return res
@@ -372,7 +378,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
 })
 
 const getWatchHistory = asyncHandler(async(req,res)=>{
-  const User = await user.aggregate([
+  const User = await UserModel.aggregate([
     {
       $match:{
         _id: new mongoose.Types.ObjectId(req.User._id)
