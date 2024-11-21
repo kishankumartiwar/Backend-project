@@ -4,8 +4,8 @@ const tweetSchema = new Schema({
       type:String,
       required:true
     },
-    owner{
-      type:Schema.Types.ObjectId
+    owner:{
+      type:Schema.Types.ObjectId,
       ref:"user"
     }
 },{timestamps:true})

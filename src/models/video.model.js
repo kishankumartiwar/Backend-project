@@ -42,7 +42,7 @@ const videoSchema = new Schema(
     // Reference to the User model, indicating the owner of the video
     owner: {
       type: Schema.Types.ObjectId,
-      ref: "User"
+      ref: "user"
     }
   },
   {
