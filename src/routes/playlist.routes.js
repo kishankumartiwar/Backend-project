@@ -1,4 +1,4 @@
-/* import { Router } from 'express';
+import { Router } from 'express';
 import {
     addVideoToPlaylist,
     createPlaylist,
@@ -27,4 +27,4 @@ router.route("/remove/:videoId/:playlistId").patch(removeVideoFromPlaylist);
 
 router.route("/user/:userId").get(getUserPlaylists);
 
-export default router */
+export default router
