@@ -1,4 +1,4 @@
-/* import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const playlistSchema = new Schema({
 
@@ -23,4 +23,4 @@ owner:{
 
 },{timestamps:true})
 
-export const Playlist = mongoose.model("Playlist",playlistSchema) */
+export const Playlist = mongoose.model("Playlist",playlistSchema)
