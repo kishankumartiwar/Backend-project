@@ -6,8 +6,31 @@ import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
 const createTweet = asyncHandler(async (req, res) => {
-    //TODO: create tweet
-})
+    const { content } = req.body;
+
+    // Validate tweet content
+    if (!content || content.trim().length === 0) {
+        res.status(400);
+        throw new Error("Tweet content cannot be empty.");
+    }
+
+    // Create a new tweet in the database
+    const tweet = await Tweet.create({
+        content,
+        user: req.User._id, // Assuming `req.User` is populated by authentication middleware
+    });
+
+    if (tweet) {
+        res.status(201).json({
+            success: true,
+            message: "Tweet created successfully!",
+            tweet,
+        });
+    } else {
+        res.status(500);
+        throw new Error("Failed to create the tweet.");
+    }
+});
 
 const getUserTweets = asyncHandler(async (req, res) => {
     // TODO: get user tweets
