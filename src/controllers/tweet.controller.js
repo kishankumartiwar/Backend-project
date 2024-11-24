@@ -11,7 +11,7 @@ const createTweet = asyncHandler(async (req, res) => {
     // Validate tweet content
     if (!content || content.trim().length === 0) {
         res.status(400);
-        throw new Error("Tweet content cannot be empty.");
+        throw new ApiError(401,"Tweet content cannot be empty.");
     }
 
     // Create a new tweet in the database
@@ -21,20 +21,40 @@ const createTweet = asyncHandler(async (req, res) => {
     });
 
     if (tweet) {
-        res.status(201).json({
-            success: true,
-            message: "Tweet created successfully!",
-            tweet,
-        });
+        res.status(201).json(
+           new ApiResponse(200,"Tweet created succesfully")
+        );
     } else {
-        res.status(500);
-        throw new Error("Failed to create the tweet.");
+        throw new ApiError(404,"Failed to create the tweet.");
     }
 });
 
+
 const getUserTweets = asyncHandler(async (req, res) => {
-    // TODO: get user tweets
-})
+    // Extract the userId from request params
+    const userId = req.params.userId;
+
+    // Check if the userId is valid
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json(new ApiResponse(400, null, "Invalid userId"));
+    }
+    console.log(userId)
+    // Query the Tweet model to find tweets by the authenticated user
+    const userTweets = await Tweet.find({ user: userId });
+    console.log(userTweets)
+
+    // Handle case where no tweets are found
+    if (!userTweets || userTweets.length === 0) {
+        return res.status(404).json(new ApiResponse(200, "No tweets from user"));
+    }
+
+    // Return the list of tweets
+    return res.status(200).json(
+        new ApiResponse(200, userTweets, "Tweets fetched successfully")
+    );
+});
+
+
 
 const updateTweet = asyncHandler(async (req, res) => {
     //TODO: update tweet
