@@ -55,10 +55,31 @@ const getUserTweets = asyncHandler(async (req, res) => {
 });
 
 
-
 const updateTweet = asyncHandler(async (req, res) => {
-    //TODO: update tweet
-})
+    const tweetId = req.params.tweetId; // No need for replace, just get it from params
+    const { content } = req.body;  // Get the updated content from the request body
+    console.log(content)
+    console.log('Updating tweet ID:', tweetId);
+
+    if (!mongoose.Types.ObjectId.isValid(tweetId)) {
+        throw new ApiError(400, "Invalid tweet ID");
+    };
+    const tweet = await Tweet.findById(tweetId);
+    console.log(tweet)
+    const updatedTweet = await Tweet.findByIdAndUpdate(
+        tweetId, { content },{ new: true }         
+    );
+    console.log(updatedTweet)
+    if (!updatedTweet) {
+        throw new ApiError(404, "Tweet not found");
+    };
+    return res.status(200).json(
+        new ApiResponse(200, updatedTweet, "Tweet updated successfully")
+    );
+});
+
+
+
 
 const deleteTweet = asyncHandler(async (req, res) => {
     //TODO: delete tweet
