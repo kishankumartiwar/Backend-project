@@ -79,10 +79,22 @@ const updateTweet = asyncHandler(async (req, res) => {
 });
 
 
-
-
 const deleteTweet = asyncHandler(async (req, res) => {
     //TODO: delete tweet
+    const tweetId = req.params.tweetId; // No need for replace, just get it from params
+    if (!mongoose.Types.ObjectId.isValid(tweetId)) {
+        throw new ApiError(400, "Invalid tweet ID");
+    };
+    const deletedTweet = await Tweet.findByIdAndDelete(
+        tweetId );
+    if(!deletedTweet){
+        throw new ApiError (404 , "tweet not found")
+    }
+    
+    return res.status(200).json(
+    new ApiResponse(200, deleteTweet, "Tweet deleted successfully")
+        );
+
 })
 
 export {
