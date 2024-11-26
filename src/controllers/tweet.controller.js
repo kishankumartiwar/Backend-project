@@ -17,7 +17,7 @@ const createTweet = asyncHandler(async (req, res) => {
     // Create a new tweet in the database
     const tweet = await Tweet.create({
         content,
-        user: req.User._id, // Assuming `req.User` is populated by authentication middleware
+        owner: req.User._id, // Assuming `req.User` is populated by authentication middleware
     });
 
     if (tweet) {
@@ -40,7 +40,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
     }
     console.log(userId)
     // Query the Tweet model to find tweets by the authenticated user
-    const userTweets = await Tweet.find({ user: userId });
+    const userTweets = await Tweet.find({ owner: userId });
     console.log(userTweets)
 
     // Handle case where no tweets are found
