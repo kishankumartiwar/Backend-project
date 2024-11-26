@@ -57,7 +57,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 
 const updateTweet = asyncHandler(async (req, res) => {
     const tweetId = req.params.tweetId; // No need for replace, just get it from params
-    const { content } = req.body;  // Get the updated content from the request body
+    const { content } = req.body;  
     console.log(content)
     console.log('Updating tweet ID:', tweetId);
 
