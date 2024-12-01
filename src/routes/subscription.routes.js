@@ -1,4 +1,4 @@
-import { Router } from 'express';
+/* import { Router } from 'express';
 import {
     getSubscribedChannels,
     getUserChannelSubscribers,
@@ -16,4 +16,4 @@ router
 
 router.route("/u/:subscriberId").get(getUserChannelSubscribers);
 
-export default router
+export default router */
