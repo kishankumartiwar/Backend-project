@@ -1,4 +1,4 @@
-import { Router } from 'express';
+/* import { Router } from 'express';
 import {
     deleteVideo,
     getAllVideos,
@@ -39,4 +39,4 @@ router
 
 router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
 
-export default router
+export default router */
