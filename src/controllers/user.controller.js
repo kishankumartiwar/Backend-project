@@ -1,4 +1,4 @@
-/* import { asyncHandler } from "../utils/asyncHandler.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { user as UserModel } from "../models/user.model.js"; // Importing the user model and renaming it for clarity
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Cloudinary utility to upload files
@@ -430,7 +430,7 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
   )
 })
 // Exporting the controller functions
-/* export {   
+export {   
   registerUser,
   loginUser,
   logoutUser,
@@ -442,5 +442,4 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
   updateUserCoverImage,
   getUserChannelProfile,
   getWatchHistory
-}; */
- 
+};
