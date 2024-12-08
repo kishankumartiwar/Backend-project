@@ -1,4 +1,4 @@
-/* // Define a class for structuring standard API responses
+// Define a class for structuring standard API responses
 class ApiResponse {
   constructor(statusCode, data, message = "success") {
     this.statusCode = statusCode;   // HTTP status code for the response (e.g., 200, 404)
@@ -9,4 +9,4 @@ class ApiResponse {
 }
 
 // This class allows consistent structure in API responses across the application, making it easier to interpret results.
-export {ApiResponse} */
+export {ApiResponse}
