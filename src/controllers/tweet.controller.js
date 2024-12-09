@@ -98,8 +98,8 @@ const deleteTweet = asyncHandler(async (req, res) => {
 })
 
 export {
-    createTweet,
+   /*  createTweet,
     getUserTweets,
     updateTweet,
-    deleteTweet
+    deleteTweet */
 }
